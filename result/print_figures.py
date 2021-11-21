@@ -212,9 +212,9 @@ if __name__ == '__main__':
     df_postgres['PC'] = df_postgres.PC.apply(lambda x: x / 1000)
     df_mongo['PC'] = df_mongo.PC.apply(lambda x: x * 3)
 
-    for db in [#{"db": "cassandra", "df": df_cass},
+    for db in [{"db": "cassandra", "df": df_cass},
                {"db": "mongodb", "df": df_mongo},
-               # {"db": "postgres", "df": df_postgres}
+               {"db": "postgres", "df": df_postgres}
                ]:
         df_all = db["df"]
         df_all_c = list()
@@ -232,43 +232,6 @@ if __name__ == '__main__':
 
         df_cass = pd.DataFrame(df_all_c,
                                columns=['UDF', 'RK', 'PC', 'RD', 'type', 'is_np', 'mean', 'std', 'q1', 'median', 'q3'])
-
-        """
-          ####### UDF=~var, RK=3, PC=3, RD=9
-        """
-        df_udf = df_cass[df_cass.RK == 3]
-        df_udf = df_udf[df_udf.PC == 3.0]
-        df_udf = df_udf[df_udf.RD == 9]
-        print(f'img/{db["db"]}')
-        create_bars(df_udf, f'img/{db["db"]}', db["db"])
-        create_bars(df_udf, f'img/{db["db"]}', db["db"])
-    
-        """
-          ####### UDF=10_intersect, RK=3, PC=3, RD=~var
-        """
-        df_RD = df_cass[df_cass.UDF.str.contains("10_intersect")]
-        df_RD = df_RD[df_RD.RK == 3]
-    
-        create_dd(df_RD, 'RK', 'PC', 'RD', f'img/{db["db"]}', db["db"])
-    
-        """
-          ####### UDF=10_intersect, RK=~, PC=3, RD=9
-        """
-        df_RK = df_cass[df_cass.UDF.str.contains("10_intersect")]
-        df_RK = df_RK[df_RK.RD == 9]
-    
-        create_bb(df_RK, 'RD', 'PC', 'RK', f'img/{db["db"]}', db["db"])
-    
-        """
-          ####### UDF=10_intersect, RK=3, PC=~var, RD=9
-        """
-        df_RK = df_cass[df_cass.UDF.str.contains("10_intersect")]
-        df_RK = df_RK[df_RK.RD == 9]
-
-        create_bb(df_RK, 'RD', 'RK', 'PC', f'img/{db["db"]}', db["db"])
-        """
-        PRINT ALL
-        """
 
         create_bars(df_cass, f'images/{db["db"]}', db["db"])
         create_d(df_cass, f'images/{db["db"]}', db["db"])
