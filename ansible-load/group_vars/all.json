@@ -1,0 +1,40 @@
+{
+"cluster": {
+            "node_manager": "192.168.55.20",
+            "node_workers": [
+                "192.168.55.20",
+                "192.168.55.19",
+                "192.168.55.18"
+            ]
+        },
+  "database_info_path": "/home/magisterka/etl-nosql/db/cassandra",
+  "udf_path": "/home/magisterka/etl-nosql/db/cassandra/udf",
+  "database_info_file": "mongodb.info.json",
+  "docker_compose_path": "/home/magisterka/etl-nosql/db/cassandra",
+  "ansible_catalog": "/home/magisterka/etl-nosql/ansible-load",
+  "mongo_catalog": "data",
+  "tables_schema": ["catalog_returns", "date_dim", "store_sales", "catalog_sales",
+              "web_sales", "warehouse", "customer", "customer_address", "store_returns"],
+  "shards_dir": [
+    "shard01a",
+    "shard01b",
+    "shard01c",
+    "shard02a",
+    "shard02b",
+    "shard02c",
+    "shard03a",
+    "shard03b",
+    "shard03c"
+  ],
+    "cluster_size": 3,
+    "scale": 10,
+
+  "db": {
+    "service_name": "mongodb",
+    "etl_driver": "mongodb",
+    "docker_stack_name": "ETL",
+    "db_tables_path": "/table_data",
+    "db_tables_schema": "/tables_schema",
+    "network_name": "mongoNet"
+  }
+}

@@ -1,0 +1,13 @@
+---
+
+- hosts: data_gen_node
+  tasks:
+    - name: Create CassTbConv env file
+      ansible.builtin.command: "python3 config.py /home/magisterka/etl-nosql/ansible-gen-data/group_vars/all.json"
+      args:
+        chdir: "{{ cassTbConv_path }}"
+
+    - name: Create sstables
+      ansible.builtin.command: "java -Xmx6G -cp CassTbConv.jar tbc.Converter {{ out_file_name }}"
+      args:
+        chdir: "{{ cassTbConv_path }}"

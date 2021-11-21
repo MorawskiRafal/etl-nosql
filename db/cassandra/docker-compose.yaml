@@ -1,0 +1,110 @@
+version: '3.3'
+services:
+  cassandra-1:
+    image: cassandra:3.11.11
+    deploy:
+      placement:
+        constraints:
+          - node.hostname==magisterka-OptiPlex-780-16
+    environment:
+      CASSANDRA_LISTEN_ADDRESS: tasks.cassandra-1
+    volumes:
+      - "~/etl-nosql/db/cassandra/tables_schema:/tables_schema"
+      - "~/etl-nosql/db/table_data:/table_data"
+      - "~/etl-nosql/db/cassandra/var/lib/cassandra/x5/3:/var/lib/cassandra"
+      - type: bind
+        source: "~/etl-nosql/db/cassandra/etc/cassandra/jvm.options"
+        target: "/etc/cassandra/jvm.options"
+    ports:
+      - "7000:7000"
+      - "9042:9042"
+    networks:
+      - cassandra
+
+  cassandra-2:
+    image: cassandra:3.11.11
+    deploy:
+      placement:
+        constraints:
+          - node.hostname==magisterka-OptiPlex-780-17
+    environment:
+      CASSANDRA_LISTEN_ADDRESS: tasks.cassandra-2
+      CASSANDRA_SEEDS: "tasks.cassandra-1"
+    volumes:
+      - "~/etl-nosql/db/cassandra/tables_schema:/tables_schema"
+      - "~/etl-nosql/db/table_data:/table_data"
+      - "~/etl-nosql/db/cassandra/var/lib/cassandra/x5/3:/var/lib/cassandra"
+      - type: bind
+        source: "~/etl-nosql/db/cassandra/etc/cassandra/jvm.options"
+        target: "/etc/cassandra/jvm.options"
+    depends_on:
+      - "cassandra-1"
+    networks:
+      - cassandra
+  cassandra-3:
+    image: cassandra:3.11.11
+    deploy:
+      placement:
+        constraints:
+          - node.hostname==magisterka-OptiPlex-780-18
+    environment:
+      CASSANDRA_LISTEN_ADDRESS: tasks.cassandra-3
+      CASSANDRA_SEEDS: "tasks.cassandra-1, tasks.cassandra-2"
+    volumes:
+      - "~/etl-nosql/db/cassandra/tables_schema:/tables_schema"
+      - "~/etl-nosql/db/table_data:/table_data"
+      - "~/etl-nosql/db/cassandra/var/lib/cassandra/x5/3:/var/lib/cassandra"
+      - type: bind
+        source: "~/etl-nosql/db/cassandra/etc/cassandra/jvm.options"
+        target: "/etc/cassandra/jvm.options"
+    depends_on:
+      - "cassandra-1"
+    networks:
+      - cassandra
+
+  cassandra-4:
+    image: cassandra:3.11.11
+    deploy:
+      placement:
+        constraints:
+          - node.hostname==magisterka-OptiPlex-780-19
+    environment:
+      CASSANDRA_LISTEN_ADDRESS: tasks.cassandra-4
+      CASSANDRA_SEEDS: "tasks.cassandra-1, tasks.cassandra-2, tasks.cassandra-3"
+    volumes:
+      - "~/etl-nosql/db/cassandra/tables_schema:/tables_schema"
+      - "~/etl-nosql/db/table_data:/table_data"
+      - "~/etl-nosql/db/cassandra/var/lib/cassandra/x5/3:/var/lib/cassandra"
+      - type: bind
+        source: "~/etl-nosql/db/cassandra/etc/cassandra/jvm.options"
+        target: "/etc/cassandra/jvm.options"
+    depends_on:
+      - "cassandra-1"
+    networks:
+      - cassandra
+
+  cassandra-5:
+    image: cassandra:3.11.11
+    deploy:
+      placement:
+        constraints:
+          - node.hostname==magisterka-Lenovo-Y700-17ISK-20
+    environment:
+      CASSANDRA_LISTEN_ADDRESS: tasks.cassandra-5
+      CASSANDRA_SEEDS: "tasks.cassandra-1, tasks.cassandra-2, tasks.cassandra-3, tasks.cassandra-4"
+    volumes:
+      - "~/etl-nosql/db/cassandra/tables_schema:/tables_schema"
+      - "~/etl-nosql/db/table_data:/table_data"
+      - "~/etl-nosql/db/cassandra/var/lib/cassandra/x5/3:/var/lib/cassandra"
+      - type: bind
+        source: "~/etl-nosql/db/cassandra/etc/cassandra/jvm.options"
+        target: "/etc/cassandra/jvm.options"
+    depends_on:
+      - "cassandra-1"
+    networks:
+      - cassandra
+
+networks:
+  cassandra:
+    external:
+      name: cassandraNet

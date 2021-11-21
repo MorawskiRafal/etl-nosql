@@ -1,0 +1,146 @@
+---
+#############################
+- hosts: cluster_node_manager
+  tasks:
+    - name: Manager - remove stack
+      ansible.builtin.command: "docker stack rm {{db['docker_stack_name']}}"
+      tags: tag_prepare
+      ignore_errors: true
+
+    - name: Manager - remove network
+      ansible.builtin.command: "docker network rm {{db['network_name']}}"
+      tags: tag_prepare
+      ignore_errors: true
+
+- hosts: cluster_node_workers
+  tasks:
+    - name: Workers - Leave cluster
+      ansible.builtin.command: "docker swarm leave"
+      tags: tag_prepare
+      ignore_errors: true
+
+
+- hosts: cluster_node_manager
+  tasks:
+    - name: Manager - Leave cluster
+      ansible.builtin.command: "docker swarm leave --force"
+      tags: tag_prepare
+      ignore_errors: true
+
+- hosts: cluster_node_manager:cluster_node_workers
+  tasks:
+    - name: Create Folder
+      file:
+        path: "~/etl-nosql/db/postgress/var/lib/postgresql/data/{{cluster_size}}/{{scale}}"
+        state: directory
+
+
+######################
+- hosts: cluster_node_manager
+  tasks:
+    - name: Manager - remove network
+      ansible.builtin.command: "docker network rm {{db['network_name']}}"
+      tags: tag_rm_stack
+      ignore_errors: true
+
+    - name: Manager - remove stack
+      ansible.builtin.command: "docker stack rm {{db['docker_stack_name']}}"
+      tags: tag_rm_stack
+      ignore_errors: true
+
+- hosts: cluster_node_manager
+  tasks:
+    - name: Restore files, change parameters
+      block:
+        - name: Create docker compose
+          ansible.builtin.command: "python3 create_docker_compose.py {{cluster_size}} {{scale}}"
+          args:
+            chdir: "{{database_info_path}}"
+      tags: tag_files
+
+###############################
+- hosts: cluster_node_manager
+  tasks:
+    - name: Init docker swarm node manager
+      block:
+        - name: Init swarm
+          ansible.builtin.command:  docker swarm init
+
+        - name: Register swarm worker token
+          ansible.builtin.command: docker swarm join-token -q worker
+          register: cluster_token
+      tags: tag_init_swarm
+
+
+- hosts: cluster_node_workers
+  tasks:
+    - name: Init docker swarm workers
+      block:
+        - name: Init swarm workers
+          ansible.builtin.command:  "docker swarm join --token {{ hostvars[cluster['node_manager']]['cluster_token'].stdout }} {{cluster['node_manager']}}:2377"
+      tags: tag_init_swarm
+
+###############################
+
+- hosts: cluster_node_manager:cluster_node_workers
+  tasks:
+    - name: Init swarm workers
+      ansible.builtin.command: "docker volume rm pgdata_{{cluster_size}}_{{scale}}"
+      ignore_errors: true
+      tags: tag_init_vol
+
+    - name: Init swarm workers
+      ansible.builtin.command: "docker volume create pgdata_{{cluster_size}}_{{scale}}"
+      tags: tag_init_vol
+
+
+###############################
+- hosts: cluster_node_manager
+  tasks:
+    - name: Create docker network
+      ansible.builtin.command: "docker network create -d overlay {{ db['network_name'] }}"
+      tags: tag_deploy_stack
+      ignore_errors: true
+
+    - name: Docker stack up
+      ansible.builtin.command: "docker stack deploy -c {{database_info_path}}/docker-compose.yaml {{db['docker_stack_name']}}"
+      tags: tag_deploy_stack
+
+    - name: Wait
+      pause:
+        seconds: 10
+      tags: tag_deploy_stack
+
+
+###############################
+
+- hosts: cluster_node_manager
+  tasks:
+    - name: Create schema
+      block:
+        - name: Get container ID 3
+          ansible.builtin.command: "docker ps -q --filter name={{db['docker_stack_name']}}* "
+          register: container_id
+
+        - name: Add workers
+          ansible.builtin.command: "docker exec {{container_id.stdout}} psql -f /scripts/add_workers_{{cluster_size}}.sql"
+          tags: tag_db_fill_tables
+
+        - name: Wait
+          pause:
+            seconds: 30
+          tags: tag_deploy_stack
+
+        - name: Create schema
+          ansible.builtin.command: "docker exec {{container_id.stdout}} psql -f /tables_schema/{{item}}.sql"
+          loop: "{{tables_schema}}"
+          tags: tag_db_fill_tables
+
+        - name: Create distribute tables
+          ansible.builtin.command: "docker exec {{container_id.stdout}} psql -f /scripts/create_dist_table.sql"
+          tags: tag_db_fill_tables
+
+        - name: Load data
+          ansible.builtin.command: docker exec {{container_id.stdout}} psql -c "\copy {{item}} FROM '/table_data/{{scale}}/{{item}}.dat' WITH CSV DELIMITER '|' ENCODING 'ISO-8859-1'"
+          loop: "{{tables_schema}}"
+          tags: tag_db_fill_tables

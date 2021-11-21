@@ -1,0 +1,104 @@
+{
+  "static": {
+    "cluster": {
+      "node_manager": "192.168.55.16",
+      "node_workers": [
+        "192.168.55.19",
+        "192.168.55.18",
+        "192.168.55.17",
+        "192.168.55.16",
+        "192.168.55.15"
+      ],
+      "port": 27017
+    },
+    "database": "mongodb",
+    "database_info_path": "/home/magisterka/etl-nosql/db/mongodb",
+    "udf_path": "/home/magisterka/etl-nosql/db/udf",
+    "docker_compose_path": "/home/magisterka/etl-nosql/db/mongodb",
+    "ansible_catalog": "/home/magisterka/etl-nosql/db/mongodb/ansible",
+    "ansible_load_data_path": "/home/magisterka/etl-nosql/ansible-load",
+    "ansible_load_data_file": "mongo_load_data.yaml",
+    "output": "/home/magisterka/etl-nosql/result/run_mongo.csv",
+    "tables_schema": [
+      "catalog_returns",
+      "date_dim",
+      "store_sales",
+      "catalog_sales",
+      "web_sales",
+      "warehouse",
+      "customer",
+      "customer_address",
+      "store_returns"
+    ],
+    "mongo_catalog": "db_data",
+    "loops": 10,
+    "db": {
+      "service_name": "mongodb",
+      "etl_driver": "mongodb",
+      "docker_stack_name": "ETL",
+      "db_tables_path": "/table_data",
+      "db_tables_schema": "/tables_schema",
+      "network_name": "mongoNet"
+    },
+    "configs": [
+      {
+        "file_name": "mongod.conf",
+        "file_path": "/home/magisterka/etl-nosql/db/mongodb/etc",
+        "params": [
+          {
+            "regex": "<number>",
+            "replace": "{{cache_size}}"
+          }
+        ]
+      }
+    ],
+    "namespace": "tpc_ds",
+    "udfs": [
+      "10_intersect_np.json",
+      "10_intersect_pp.json",
+      "16_large_agg_fp.json",
+      "16_large_agg_np.json",
+      "17_left_join_np.json",
+      "17_left_join_pp.json",
+      "18_merge_join_np.json",
+      "18_merge_join_pp.json",
+      "20_nested_loops_np.json",
+      "20_nested_loops_pp.json"
+    ],
+    "shards_dir": ["shard01a", "shard01b", "shard01c",
+               "shard02a", "shard02b", "shard02c",
+               "shard03a", "shard03b", "shard03c",
+               "shard04a", "shard04b", "shard04c",
+               "shard05a", "shard05b", "shard05c"],
+    "spark_cmd": "spark-submit --master \"yarn\" --driver-memory 4G --driver-cores 2 --num-executors 3 --packages org.mongodb.spark:mongo-spark-connector_2.12:3.0.1 /home/magisterka/etl-nosql/run_main_mongo.py "
+  },
+  "dynamic": {
+    "scale": {
+      "context": "table_data",
+      "priority": 999,
+      "data": [
+        1,
+        3,
+        6,
+        9
+      ]
+    },
+    "cluster_size": {
+      "context": "cluster",
+      "priority": 998,
+      "data": [
+        3,
+        4
+      ]
+    },
+    "cache_size": {
+      "context": "db-file",
+      "priority": 2,
+      "data": [
+        2,
+        1.5,
+        1
+      ]
+    }
+  }
+}
