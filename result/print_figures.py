@@ -51,7 +51,7 @@ def create_bars(df, path, db):
 
         f_bar = fig_bars(names, np_, pp_, RK, RD, PC)
         f_bar.write_image(f"{path}/{img_id_bar}.pdf")
-
+        group.to_csv(f"{path}/{img_id_bar}.csv", index=False)
 
 
 c2p = {'RD': "RD", 'PC': 'PC', 'RK': 'RK'}
@@ -124,9 +124,9 @@ def create_dd(df_c, c1, c2, c3, path, db):
             )
 
             img_id += 1
-            img_name = f"{path}/{db}_{c1}{group1[c1].iloc[0]}_{c2}_{c3}_{name}.pdf"
-            fig.write_image(img_name)
-
+            img_name = f"{path}/{db}_{c1}{group1[c1].iloc[0]}_{c2}_{c3}_{name}"
+            fig.write_image(img_name + ".pdf")
+            group1.copy().drop(['type', 'is_np'], axis=1).sort_values([c1, c2, c3]).to_csv(img_name + ".csv", index=False)
 
 def create_bb(df_c, c1, c2, c3, path, db):
     df_udf = df_c.groupby('type')
@@ -189,9 +189,9 @@ def create_bb(df_c, c1, c2, c3, path, db):
                 )
             )
 
-            img_name = f"{path}/{db}_{c1}{group1[c1].iloc[0]}_{c2}_{c3}_{name}.pdf"
-            fig.write_image(img_name)
-
+            img_name = f"{path}/{db}_{c1}{group1[c1].iloc[0]}_{c2}_{c3}_{name}"
+            fig.write_image(img_name + ".pdf")
+            group1.copy().drop(['type', 'is_np'], axis=1).sort_values([c1, c2, c3]).to_csv(img_name + ".csv", index=False)
 
 def create_d(df, path, db):
     create_dd(df, 'RK', 'PC', 'RD', path, db)
@@ -205,9 +205,9 @@ def create_b(df, path, db):
 if __name__ == '__main__':
     pd.set_option('display.max_colwidth', None)
 
-    df_cass = pd.read_csv('data/run_cassandra.csv', names=['UDF', 'RK', 'RD', 'PC', 'czas'])
-    df_mongo = pd.read_csv('data/run_mongodb.csv', names=['UDF', 'RK', 'RD', 'PC', 'czas'])
-    df_postgres = pd.read_csv('data/run_postgres.csv', names=['UDF', 'RK', 'RD', 'PC', 'czas'])
+    df_cass = pd.read_csv('run_cassandra.csv', names=['UDF', 'RK', 'RD', 'PC', 'czas'])
+    df_mongo = pd.read_csv('run_mongodb.csv', names=['UDF', 'RK', 'RD', 'PC', 'czas'])
+    df_postgres = pd.read_csv('run_postgres.csv', names=['UDF', 'RK', 'RD', 'PC', 'czas'])
     df_cass['PC'] = df_cass.PC.apply(lambda x: x / 1000)
     df_postgres['PC'] = df_postgres.PC.apply(lambda x: x / 1000)
     df_mongo['PC'] = df_mongo.PC.apply(lambda x: x * 3)
@@ -232,6 +232,42 @@ if __name__ == '__main__':
 
         df_cass = pd.DataFrame(df_all_c,
                                columns=['UDF', 'RK', 'PC', 'RD', 'type', 'is_np', 'mean', 'std', 'q1', 'median', 'q3'])
+
+        """
+          ####### UDF=~var, RK=3, PC=3, RD=9
+        """
+        df_udf = df_cass[df_cass.RK == 3]
+        df_udf = df_udf[df_udf.PC == 3.0]
+        df_udf = df_udf[df_udf.RD == 9]
+        create_bars(df_udf, f'images/{db["db"]}', db["db"])
+        create_bars(df_udf, f'images/{db["db"]}', db["db"])
+    
+        """
+          ####### UDF=10_intersect, RK=3, PC=3, RD=~var
+        """
+        df_RD = df_cass[df_cass.UDF.str.contains("10_intersect")]
+        df_RD = df_RD[df_RD.RK == 3]
+    
+        create_dd(df_RD, 'RK', 'PC', 'RD', f'images/{db["db"]}', db["db"])
+    
+        """
+          ####### UDF=10_intersect, RK=~, PC=3, RD=9
+        """
+        df_RK = df_cass[df_cass.UDF.str.contains("10_intersect")]
+        df_RK = df_RK[df_RK.RD == 9]
+    
+        create_bb(df_RK, 'RD', 'PC', 'RK', f'images/{db["db"]}', db["db"])
+    
+        """
+          ####### UDF=10_intersect, RK=3, PC=~var, RD=9
+        """
+        df_RK = df_cass[df_cass.UDF.str.contains("10_intersect")]
+        df_RK = df_RK[df_RK.RD == 9]
+
+        create_bb(df_RK, 'RD', 'RK', 'PC', f'images/{db["db"]}', db["db"])
+        """
+        PRINT ALL
+        """
 
         create_bars(df_cass, f'images/{db["db"]}', db["db"])
         create_d(df_cass, f'images/{db["db"]}', db["db"])
