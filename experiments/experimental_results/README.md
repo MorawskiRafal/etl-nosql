@@ -1,5 +1,5 @@
 - **cassandra**, **mongodb**, **postgres** - foldery zawierające wygenerowane wykresy oraz pliki csv, dla których zostały te wykresy wygenerowane.
-- Generowane są 4 typy wykresów. Ich nazwy wykresów są pod postacią:
+- Skrypt *print_figures.py* generuje 4 typy wykresów. Ich nazwy są pod postacią:
     - *\<baza_danych\>_RK\<RK\>_PC<PC>_RD\<RD\>_bar.pdf* - wykres słupkowy przedstawiający średnie czasy wykonywania funkcji UDF, dla rozmiaru danych \<RK\>, pamięci cache <PC> i przy rozmiarze danych \<RD\> dla bazy \<baza_danych\>.
     - *\<baza_danych\>_RD\<RD\>_PC_RK_\<UDF\>.pdf* - wykres słupkowy przedstawiający średnie czasy wykonywania funkcji \<UDF\> w zależności od rozmiaru klastra, przy rozmiarze danych \<RD\> dla bazy \<baza_danych\>.
     - *\<baza_danych\>_RD\<RD\>_RK_PC_\<UDF\>.pdf* - wykres słupkowy przedstawiający średnie czasy wykonywania funkcji \<UDF\> w zależności od całkowitej pamięci cache, przy rozmiarze danych \<RD\> dla bazy \<baza_danych\>.
