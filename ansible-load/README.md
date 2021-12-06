@@ -1,0 +1,5 @@
+- **cass_load_data.yaml** - plik *Ansible playbook* automatyzujący proces importu danych do bazy danych Cassandra.
+- **mongo_load_data.yaml** - plik *Ansible playbook* automatyzujący proces importu danych do bazy danych MongoDB.
+- **postgress_load_data.yaml** - plik *Ansible playbook* automatyzujący proces importu danych do bazy danych PostgreSQL.
+- **hosts** - plik zawierający IP węzła, który wykonuje proces generowania danych i ich przetwarzania. Automatycznie generowany przez skrypt **etl-nosql/load_data.py** 
+- **group_vars/all.json** - plik z parametrami, które zostają przekazane plikom *Ansible playbook*. . Automatycznie generowany przez skrypt **etl-nosql/load_data.py** 

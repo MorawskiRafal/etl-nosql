@@ -1,0 +1,10 @@
+- **ansible/main.yaml** - plik *Ansible playbook* automatyzujący proces odtwarzania środowiska baz danych Cassandra.
+- **etc/cassandra/jvm.options** - plik konfiguracyjny baz danych Cassandra.
+- **etl/etl_process.py** - skrypt wykonujący proces ETL dla bazy danych Cassandra.
+- **tables_schema** - folder zawierający schematy tabel dla bazy danych Cassandra.
+- **var** - folder wykorzystywany przez kontenery z *docker-compose.yaml* w celu przechowywania danych z baz danych Cassandra.
+- **create_docker_compose.py** - skrypt generujący plik *docker-compose.yaml*, dla konkretnego rozmiaru klastra i konkretnego rozmiaru danych.
+- **docker-compose_sh3.yaml** - schemat pliku *docker-compose.yaml*, dla rozmiaru klastra 3.
+- **docker-compose_sh4.yaml** - schemat pliku *docker-compose.yaml*, dla rozmiaru klastra 4.
+- **docker-compose_sh5.yaml** - schemat pliku *docker-compose.yaml*, dla rozmiaru klastra 5.
+- **docker-compose.yaml** - plik Dockera, uruchamiający skonteryzowane aplikacje, w tym przypadku instancje baz danych.

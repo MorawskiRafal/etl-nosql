@@ -1,0 +1,15 @@
+- **experimental_results** -  folder zawierający wykresy wygenerowane przez skrypt *print_figures.py*.
+- **print_figures.py** -  skrypt generujący wykresy na podstawie danych eksperymentalnych.
+- **run_cassandra.csv**  - plik csv zawierający dane eskperymentalne pochodzące z wykonanych eksperymentów dla bazy danych Cassandra.
+- **run_mongodb.csv**  - plik csv zawierający dane eskperymentalne pochodzące z wykonanych eksperymentów dla bazy danych MognoDB.
+- **run_postgres.csv**  - plik csv zawierający dane eskperymentalne pochodzące z wykonanych eksperymentów dla bazy danych PostgreSQL.
+- **process_data.py** - skrypt przetwarzający dane eskperymentalne na dane uczące na potrzeby uczenia maszynowego.
+- **data_binary.csv** - dane uczące dla uczenia maszynowego w celu utworzenia klasyfikatora binarnego. Dane utworzone przez skrypt *process_data.py*, dla parametru *threshold=0.05*.
+- **data_binary_ths04.csv** - dane uczące dla uczenia maszynowego w celu utworzenia klasyfikatora binarnego. Dane utworzone przez skrypt *process_data.py*, dla parametru *threshold=0.4*.
+- **data_regression.csv** - dane uczące dla uczenia maszynowego w celu utworzenia modelu regresji liniowej. Dane utworzone przez skrypt *process_data.py*, dla parametru *threshold=0.0*.
+-  Nagłówek plików **run_cassandra.csv**, **run_mongodb.csv**, **run_postgres.csv**:
+    - UDF - nazwa funkcji UDF
+    - RK - rozmiar klastra
+    - RD - rozmiar danych
+    - PC - przyznana pamięć cache na jedną instancję bazy danych
+    - czas - czas wykonywania procesu ETL

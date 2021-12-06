@@ -1,0 +1,17 @@
+- **cassandra**, **mongodb**, **postgres** - foldery zawierające wygenerowane wykresy oraz pliki csv, dla których zostały te wykresy wygenerowane.
+- Generowane są 4 typy wykresów. Ich nazwy wykresów są pod postacią:
+    - *\<baza_danych\>_RK\<RK\>_PC<PC>_RD\<RD\>_bar.pdf* - wykres słupkowy przedstawiający średnie czasy wykonywania funkcji UDF, dla rozmiaru danych \<RK\>, pamięci cache <PC> i przy rozmiarze danych \<RD\> dla bazy \<baza_danych\>.
+    - *\<baza_danych\>_RD\<RD\>_PC_RK_\<UDF\>.pdf* - wykres słupkowy przedstawiający średnie czasy wykonywania funkcji \<UDF\> w zależności od rozmiaru klastra, przy rozmiarze danych \<RD\> dla bazy \<baza_danych\>.
+    - *\<baza_danych\>_RD\<RD\>_RK_PC_\<UDF\>.pdf* - wykres słupkowy przedstawiający średnie czasy wykonywania funkcji \<UDF\> w zależności od całkowitej pamięci cache, przy rozmiarze danych \<RD\> dla bazy \<baza_danych\>.
+    - *\<baza_danych\>_RK\<RK\>_PC_RD_\<UDF\>.pdf* - wykres liniowy przedstawiający średnie czasy wykonywania funkcji \<UDF\> w zależności od rozmiaru danych, przy rozmiarze klastra \<RK\> dla bazy \<baza_danych\>.
+- Nazwy plików, dla których wygenerowano wykresy jest taka sama jak nazwa tych wykresów, ale zawierają rozszerzenie .csv zamiast .pdf.
+- Nagłówek plików csv:
+    - UDF - nazwa funkcji UDF
+    - RK - rozmiar klastra
+    - PC - całkowita pamięć cache na węzeł fizyczny
+    - RD - rozmiar danych
+    - mean - średni czas wykonywania procesu ETL 
+    - std - odchylenie standardowe wykonywania procesu ETL 
+    - q1 - kwantyl rzędu 0.25
+    - median - mediana
+    - q3 - kwantyl rzedu 0.75

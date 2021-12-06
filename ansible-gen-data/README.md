@@ -1,0 +1,5 @@
+- **data2json.yaml** - plik *Ansible playbook* automatyzujący proces przetwarzania wygenerowanych danych do postaci JSON.
+- **gen_sstables.yaml** - plik *Ansible playbook* automatyzujący proces skompresowania wygenerowanych danych w celu ich importu do bazy Cassandra.
+- **tpc_ds_data_gen.yaml** - plik *Ansible playbook* automatyzujący generowanie danych.
+- **hosts** - plik zawierający IP węzła, który wykonuje proces generowania danych i ich przetwarzania.
+- **group_vars/all.json** - plik z parametrami, które zostają przekazane plikom *Ansible playbook*. 

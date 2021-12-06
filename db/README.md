@@ -1,0 +1,5 @@
+- **cassandra** - folder zawierający pliki i skrupty konfigurujące środowisko dla bazy danych Cassandra.
+- **mongodb** - folder zawierający pliki i skrupty konfigurujące środowisko dla bazy danych MongoDB.
+- **postgress** - folder zawierający pliki i skrupty konfigurujące środowisko dla bazy danych PostgreSQL.
+- **tables_schema** - folder zawierający schematy tabel pod postacią plików JSON.
+- **tables_schema** - folder zawierający funkcje UDF postacią plików JSON.
