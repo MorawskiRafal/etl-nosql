@@ -56,7 +56,7 @@ def get_pushdown_decision(df, binary_ths=0.0):
             df_data.append([*name, udf, pushdown])
 
     return pd.DataFrame(df_data,
-                        columns=['baza_danych', 'RK', 'PC', 'RD', 'UDF', 'etykieta'])
+                        columns=['baza_danych', 'RK', 'RD', 'PC', 'UDF', 'etykieta'])
 
 
 merge_b = get_pushdown_decision(db_merged, binary_ths=0.05)
